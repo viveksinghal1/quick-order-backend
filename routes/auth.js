@@ -7,7 +7,7 @@ let router = express.Router();
 const User = require("../models/user");
 const seedDB = require("../seed");
 
-const RSA_PRIVATE_KEY = fs.readFileSync("../private.key");
+const RSA_PRIVATE_KEY = fs.readFileSync("./private.key");
 
 router.post("/register", async function(req, res){
     try {
@@ -22,6 +22,7 @@ router.post("/register", async function(req, res){
                 name: req.body.name
             });
             let registeredUser =  await user.save();
+            console.log("registered User", registeredUser);
             try {
                 let payload = { subject: registeredUser._id };
                 let token = jwt.sign(payload, RSA_PRIVATE_KEY, { algorithm: 'RS256' });
@@ -44,10 +45,13 @@ router.post("/register", async function(req, res){
 router.post("/login", async function(req, res){
     try {
         let foundUser = await User.findOne({email: req.body.email});
+        console.log("found User", foundUser);
         if (!foundUser) {
             res.status(401).send("Invalid Email");
         } else {
             let formPassword = cryptoJS.SHA256(req.body.password).toString();
+            console.log("password", foundUser.password);
+            console.log("password form", formPassword);
             if (formPassword!==foundUser.password) {
                 res.status(401).send("Incorrect Password");
             } else {
