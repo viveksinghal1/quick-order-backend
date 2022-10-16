@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
-const RSA_PUBLIC_KEY = fs.readFileSync("./public.key");
+const RSA_PUBLIC_KEY = fs.readFileSync("./keys/public.key");
 const User = require("../models/user");
 
 let middleware = {};
